@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top_container">
+            <div class="title_banner">
+                <div class="bg_elipse"></div>
+                <h3 class="calculator_title">ROI CRO Calculator</h3>
+            </div>
+            <div class="input-field-wrapper">
+                <div class="input_title">
+                    <label for="conversion-rate" class="field-label">Conversion Rate</label>
+                    <div class="field-number"><span id="val1">2.00</span>%</div>
+                </div>
+                <div class="slider_and_number">
+                    <input type="range" id="conversion-rate" min="0.05" max="15" step="0.01" value="2" class="styled-slider slider-progress">
+                </div>
+            </div>
+            <div class="input-field-wrapper">
+                <div class="input_title">
+                    <label for="average-order-value" class="field-label">Average Order Value</label>
+                    <div class="field-number">$<span id="val2">100</span></div>
+                </div>
+                <div class="slider_and_number">
+                    <input type="range" id="average-order-value" min="10" max="1000" value="100" class="styled-slider slider-progress">
+                </div>
+            </div>
+            <div class="input-field-wrapper">
+                <div class="input_title">
+                    <label for="monthly-sessions" class="field-label">Monthly Sessions</label>
+                    <div class="field-number"><span id="val3">100000</span></div>
+                </div>
+                <div class="slider_and_number">
+                    <input type="range" id="monthly-sessions" min="50000" max="1000000" step="1000" value="100000" class="styled-slider slider-progress">
+                </div>
+          </div>
+          <div class="input_impact_container">
+            <div class="impact_container">
+                <label for="impact" class="field-label">Impact After Help</label>
+                <div class="field_button_wrapper">
+                    <div class="field_button" value="2.5">2.5%</div>
+                    <div class="field_button" value="5" >5%</div>
+                    <div class="field_button" value="10">10%</div>
+                    <div class="field_button active" value="25" id="impact-default">25%</div>
+                    <div class="field_button" value="50">50%</div>
+                    <div class="field_button" value="100">100%</div>
+                    <div class="field_button" value="150">150%</div>
+                    <div class="field_button" value="200">200%</div>
+                </div>
+            </div>
+
+          </div>
+          <div class="guided_note">*We typically help our clients generate a 2-8x return
+        </div>
+        </div>
+        <div class="bot_container">
+            <div class="estimate">
+                <div class="estimate_title">Estimated Monthly Revenue:</div>
+                <div class="monthly_revenue">$<span id="monthly_revenue">5000</span></div>
+            </div>
+            <div class="result_wrapper">
+                <div class="highlight">
+                    <p>You could <span class="emphasis">gain</span> </p>
+                    <div class="form_number">$<span id="extra_monthly_revenue">0</span></div>
+                    <p>per  <span class="emphasis">month</span> </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    for (let e of document.querySelectorAll('input[type="range"].slider-progress')) {
+        e.style.setProperty('--value', e.value);
+        e.style.setProperty('--min', e.min == '' ? '0' : e.min);
+        e.style.setProperty('--max', e.max == '' ? '100' : e.max);
+        e.addEventListener('input', () => e.style.setProperty('--value', e.value));
+    }
+</script>
+<!-- add text/javascript-->
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+// select all input of type range in the topcontainer
+const inputs_sliders = document.querySelector('.top_container').querySelectorAll('input[type="range"]')
+inputs_sliders.forEach(input => {
+    input.addEventListener('input', function() {
+        updateValues()
+    });
+});
+const field_buttons = document.querySelector('.top_container').querySelectorAll('.field_button')
+
+field_buttons.forEach(button => {
+    button.addEventListener('click', function() {
+        field_buttons.forEach(button => button.classList.remove('active'));
+        button.classList.add('active');
+
+        updateValues()
+    });
+});
+
+updateValues();
+document.getElementById('impact-default').classList.add('active');
+});
+
+function updateValues() {
+const conversionRate = parseFloat(document.getElementById('conversion-rate').value);
+const averageOrderValue = parseFloat(document.getElementById('average-order-value').value);
+const monthlySessions = parseInt(document.getElementById('monthly-sessions').value);
+console.log()
+const impact = document.querySelector('.field_button.active').getAttribute('value');
+
+document.getElementById('val1').textContent = conversionRate.toFixed(2);
+document.getElementById('val2').textContent = averageOrderValue.toFixed(0);
+document.getElementById('val3').textContent = monthlySessions.toLocaleString();
+
+const revenue = calculateRevenue(conversionRate, averageOrderValue, monthlySessions);
+
+document.getElementById('monthly_revenue').textContent = Math.round(revenue).toLocaleString()
+document.getElementById('extra_monthly_revenue').textContent = Math.round((revenue * (impact / 100))).toLocaleString();
+}
+
+function calculateRevenue(conversionRate, averageOrderValue, monthlySessions) {
+return (conversionRate / 100) * averageOrderValue * monthlySessions;
+}
+</script>
+<style>
+
+    body {
+        overflow-x: hidden;
+    }
+    .center_div {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+display: flex;
+margin: auto auto;
+width: 90%;
+padding: 10px;
+height: 90vh;
+}
+
+.container {
+color: black;
+display: flex;
+font-family: 'Roboto', sans-serif;
+flex-direction: column;
+width: 100%;
+border-radius: 20px;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.top_container{
+position: relative;
+padding:2rem;
+padding-top: 0rem;
+height: 70%;
+}
+
+.top_container::before {
+content: '';
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+background-image: url("https://clickgear.io/wp-content/uploads/2024/06/test_bg.png");
+background-position: calc(100% + 20px);
+background-repeat: no-repeat;
+background-size: 110%;
+border-radius: 0px 20px 0px 0px; /* Adjust the value as needed */
+z-index: -1;
+}
+.calculator_title {
+font-size: 30px;
+color: black;
+font-family: 'Roboto', sans-serif;
+}
+
+.bot_container {
+height: 30%;
+background-color: #FDFEFF;
+border: 4px solid #3EA548;
+border-radius: 0px 0px 20px 20px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+align-items: center;
+justify-content: center;
+}
+
+.title_banner {
+position: relative;
+font-size: 20px;
+font-weight: bold;
+text-align: center;
+margin-bottom: 1rem;
+}
+
+.bg_elipse {
+z-index: -1;
+width: 70%;
+height: 40px;
+background-color: #3ea548c2;
+filter: blur(20px);
+border-radius: 50%;
+position: absolute;
+top: 50%;
+right: 50%;
+transform: translate(50%, -50%);
+}
+.input-field-wrapper {
+padding-top: 0.5rem;
+}
+
+.slider_and_number {
+padding-top: 0.5rem;
+display: flex;
+gap: 1rem;
+align-items: center;
+}
+
+.field-label {
+font-weight: bold;
+}
+
+/* START OF SECTIOn for slider style */
+.slider_and_number input {
+width: 100%;
+background: transparent;
+}
+/*generated with Input range slider CSS style generator (version 20211225)
+https://toughengineer.github.io/demo/slider-styler*/
+.slider_and_number input[type=range].styled-slider {
+height: 2.2em;
+-webkit-appearance: none;
+}
+
+/*progress support*/
+.slider_and_number input[type=range].styled-slider.slider-progress {
+--range: calc(var(--max) - var(--min));
+--ratio: calc((var(--value) - var(--min)) / var(--range));
+--sx: calc(0.5 * 2em + var(--ratio) * (100% - 2em));
+}
+
+.slider_and_number input[type=range].styled-slider:focus {
+outline: none;
+}
+
+/*webkit*/
+.slider_and_number input[type=range].styled-slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 1.5em;
+height: 1.5em;
+border-radius: 1em;
+background: #3EA548;
+border: none;
+box-shadow: 0 0 2px black;
+margin-top: calc(max((1em - 1px - 1px) * 0.5,0px) - 2em * 0.5);
+}
+
+.slider_and_number input[type=range].styled-slider::-webkit-slider-runnable-track {
+height: 0.7em;
+border: 1px solid #b2b2b2;
+border-radius: 0.5em;
+background: #EFEFEF;
+box-shadow: none;
+}
+
+.slider_and_number input[type=range].styled-slider::-webkit-slider-thumb:hover {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:hover::-webkit-slider-runnable-track {
+background: #e5e5e5;
+border-color: #9A9A9A;
+}
+
+.slider_and_number input[type=range].styled-slider::-webkit-slider-thumb:active {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:active::-webkit-slider-runnable-track {
+background: #f5f5f5;
+border-color: #c1c1c1;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress::-webkit-slider-runnable-track {
+background: linear-gradient(#3EA548,#3EA548) 0/var(--sx) 100% no-repeat, #EFEFEF;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress:hover::-webkit-slider-runnable-track {
+background: linear-gradient(#3EA548,#3EA548) 0/var(--sx) 100% no-repeat, #e5e5e5;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress:active::-webkit-slider-runnable-track {
+background: linear-gradient(#35903E,#35903E) 0/var(--sx) 100% no-repeat, #f5f5f5;
+}
+
+/*mozilla*/
+.slider_and_number input[type=range].styled-slider::-moz-range-thumb {
+width: 1.5em;
+height: 1.5em;
+border-radius: 1em;
+background: #3EA548;
+border: none;
+box-shadow: 0 0 2px black;
+}
+
+.slider_and_number input[type=range].styled-slider::-moz-range-track {
+height: max(calc(1em - 1px - 1px),0px);
+border: 1px solid #b2b2b2;
+border-radius: 0.5em;
+background: #EFEFEF;
+box-shadow: none;
+}
+
+.slider_and_number input[type=range].styled-slider::-moz-range-thumb:hover {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:hover::-moz-range-track {
+background: #e5e5e5;
+border-color: #9A9A9A;
+}
+
+.slider_and_number input[type=range].styled-slider::-moz-range-thumb:active {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:active::-moz-range-track {
+background: #f5f5f5;
+border-color: #c1c1c1;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress::-moz-range-track {
+background: linear-gradient(#3EA548,#3EA548) 0/var(--sx) 100% no-repeat, #EFEFEF;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress:hover::-moz-range-track {
+background: linear-gradient(#3EA548,#3EA548) 0/var(--sx) 100% no-repeat, #e5e5e5;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress:active::-moz-range-track {
+background: linear-gradient(#35903E,#35903E) 0/var(--sx) 100% no-repeat, #f5f5f5;
+}
+
+/*ms*/
+.slider_and_number input[type=range].styled-slider::-ms-fill-upper {
+background: transparent;
+border-color: transparent;
+}
+
+.slider_and_number input[type=range].styled-slider::-ms-fill-lower {
+background: transparent;
+border-color: transparent;
+}
+
+.slider_and_number input[type=range].styled-slider::-ms-thumb {
+width: 1.5em;
+height: 1.5em;
+border-radius: 1em;
+background: #3EA548;
+border: none;
+box-shadow: 0 0 2px black;
+margin-top: 0;
+box-sizing: border-box;
+}
+
+.slider_and_number input[type=range].styled-slider::-ms-track {
+height: 0.7em;
+border-radius: 0.5em;
+background: #EFEFEF;
+border: 1px solid #b2b2b2;
+box-shadow: none;
+box-sizing: border-box;
+}
+
+.slider_and_number input[type=range].styled-slider::-ms-thumb:hover {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:hover::-ms-track {
+background: #e5e5e5;
+border-color: #9A9A9A;
+}
+
+.slider_and_number input[type=range].styled-slider::-ms-thumb:active {
+background: #35903E;
+}
+
+.slider_and_number input[type=range].styled-slider:active::-ms-track {
+background: #f5f5f5;
+border-color: #c1c1c1;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress::-ms-fill-lower {
+height: max(calc(1em - 1px - 1px),0px);
+border-radius: 0.5em 0 0 0.5em;
+margin: -1px 0 -1px -1px;
+background: #3EA548;
+border: 1px solid #b2b2b2;
+border-right-width: 0;
+}
+
+.slider_and_number input[type=range].styled-slider.slider-progress:active::-ms-fill-lower {
+background: #35903E;
+border-color: #c1c1c1;
+}
+
+/*  END OF SECTION for slider style */
+
+.field-number {
+font-size: 1.45rem;
+font-weight: bold;
+letter-spacing: 1px;
+}
+
+.input_impact_container {
+display: flex;
+justify-content: space-between;
+padding-top: 1rem;
+align-items: stretch;
+gap: 1rem;
+}
+
+.field_button_wrapper {
+display: flex;
+justify-content: start;
+gap: 0.5rem;
+padding-top: 1rem;
+flex-wrap: wrap;
+}
+
+.field_button {
+font-size: 14px;
+font-weight:600;
+padding: 7px 14px;
+background-color: #e0e0e0;
+border: 1px solid #ccc;
+border-radius: 8px;
+cursor: pointer;
+}
+
+.field_button.active {
+background-color: #3EA548;
+color: white;
+}
+
+.estimate {
+    margin-top: -20px;
+    color: #434343a1;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 2px dashed #c1c1c1;
+    background-color: #d9d9d975;
+    border-radius: 20px;
+}
+
+.monthly_revenue {
+color: #2e2d2de3;
+font-size: 1.2rem;
+}
+
+.input_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.result_wrapper  {
+    margin-top: 20px;
+display: flex;
+text-align: center;
+--s: 30px; /* the size on the corner */
+--t: 3px;  /* the thickness of the border */
+--g: 17px; /* the gap between the border and image */
+justify-content: center;
+min-width: 85%;
+padding: 35px;
+outline: var(--t) solid #3EA548; /* the color here */
+outline-offset: calc(-5 *var(--t));
+-webkit-mask:
+    conic-gradient(at var(--s) var(--s),#0000 75%,#000 0)
+    0 0/calc(100% - var(--s)) calc(100% - var(--s)),
+    linear-gradient(#000 0 0) content-box;
+transition: .4s;
+}
+
+.highlight {
+font-size: 14px;
+}
+
+.highlight > p {
+    font-size: 20px;
+}
+
+
+
+
+.emphasis {
+    font-size: 26px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.form_number {
+color: black;
+font-size: 44px;
+font-weight: bold;
+}
+.guided_note {
+    margin-top: 40px;
+    color: #797676;
+}
+
+@media screen and (min-width: 1000px) {
+    .container {
+        max-width: 1000px;
+        flex-direction: row;
+    }
+    .top_container {
+        flex-grow: 3;
+        width: 100%;
+        flex-grow: 4;
+        padding: 40px;
+        padding-bottom: 80px;
+        border-radius: 0px 0px 0px 0px;
+
+    }
+    .bot_container {
+        height: unset;
+        width: 50%;
+        flex-grow: 1;
+        border-radius: 0px 20px 20px 0px;
+    }
+
+    .result_wrapper  {
+        padding: 20px;
+    }
+    .calculator_title {
+        margin-top: 0px;
+    }
+}
+
+@media (max-width: 768px) {
+    .estimate {
+        margin-top: 10px;
+    }
+    .bot_container {
+        gap: 10px;
+    }
+
+    .highlight > p:first-child {
+        margin-top: 0px;
+    }
+
+    .highlight > p:last-child {
+    margin-bottom: 0px;
+    }
+}
+
+</style>
+
+</body>
+</html>
